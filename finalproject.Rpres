@@ -1,0 +1,67 @@
+MTcars dataset analysis
+========================================================
+author: Deborah Castillo
+date: 02.11.2017
+autosize: true
+
+Basic idea
+========================================================
+
+- For this project, I want to make an analysis about MTcars dataset 
+- 
+- For this, I will use all variables in the dataset to explain MPG 
+- 
+- The regression coefficients will be shown, and will adjust automatically when more variables are added
+- 
+
+Creating the user interface
+========================================================
+The user interface is pretty simple. It will have all the regressors available next to a checkbox. The user only needs to check the variables they want to add to the regression. 
+
+```{r user interface, eval = FALSE}
+ui <- shinyUI(fluidPage(
+      
+      titlePanel("MTcars dataset exploration (Explaining MPG variable)"),
+      
+      sidebarLayout(
+            sidebarPanel(
+                  checkboxGroupInput("regressors", 
+                                     label = h3("Choose regresors"), 
+                                     choices=names(select(mtcars,-mpg)),
+                                     selected = "wt"
+                  ),
+                  width=3
+            ),
+            
+            
+            mainPanel(
+                  verbatimTextOutput("fit"),
+                  plotOutput("mpgPlot")
+            )
+      )
+))
+```
+
+Behind the scenes
+========================================================
+What the user cannot see is that R is doing a lot of work behind it, and so is the code
+For this, i calculated a simple regression, that added variables as more checkboxes are ticked. 
+Here is a chuck of code that shows how the graph (in the next slide), was made.
+```{r server, eval = FALSE}
+fitModel<-reactive({
+            fitFormula<-as.formula(checkedVal())
+            lm(fitFormula,data=mpgData)
+ output$mpgPlot<-renderPlot({
+            par(mfrow = c(2, 2), oma = c(0, 0, 2, 0))
+            plot(fitModel(), sub.caption = "Regression details plot")
+```
+
+Final insight
+========================================================
+
+Finally, the app showed all the relevant plots related to a linear model. For this, I used what we learned at the Regression Model Lesson in DataScience Specialization. 
+
+Not all codes of chuck were added, only a few
+-
+
+
